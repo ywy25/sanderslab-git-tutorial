@@ -32,6 +32,7 @@ class Arrow:
 
 class Bow:
     '''
+    Bow class for shooting arrows.
     '''
     def __init__(self, brand, limb_colour, limb_len, limb_mat, limb_weight,
         name, riser_colour, riser_len, riser_mat):
@@ -56,32 +57,32 @@ class Bow:
         self.riser_len = riser_len
         self.riser_mat = riser_mat
         self.assembled = False
-        self.tuned = False
         self.shots = 0
 
     def assemble(self):
         '''
+        Asseble the bow; required for drawing.
         '''
         self.assembled = True
 
     def get_full_length(self):
         '''
+        Calculate the length of the bow.
         '''
         length = self.riser_len + self.limb_len * 2
         return length
-
-    def tune(self):
-        '''
-        '''
-        self.tuned = True
 
 
 
 class Archer:
     '''
+    Archer class to represent a shooter.
     '''
     def __init__(self, name, skill, wingspan):
         '''
+        :param name: String; archer's name
+        :param skill: Int; the skill level of the archer from 1-10
+        :param wingspan: Int; the wingspan of the archer in inches
         '''
         self.name = name
         self.skill = skill
@@ -95,6 +96,7 @@ class Archer:
 
     def get_draw_length(self):
         '''
+        Calculate the draw length of the archer based on wingspan.
         :return draw_length: Int the draw length of self
         '''
         draw_length = int(self.wingspan/2.5)
@@ -102,6 +104,9 @@ class Archer:
 
     def get_prob_on_bow_length(self, bow):
         '''
+        Calculate the probability based on the length of the bow and draw length.
+        :param bow: Bow; bow that self is using
+        :return chance: Float; probability of success
         '''
         chance = 1
         bow_length = bow.get_full_length()
@@ -114,6 +119,9 @@ class Archer:
 
     def get_prob_on_limb_weight(self, bow):
         '''
+        Calculate the probability based on bow weight and archer skill.
+        :param bow: Bow; bow that self is using
+        :return chance: Float; probability of success
         '''
         chance = 1
         if bow.limb_weight < 20:
@@ -143,6 +151,7 @@ class Archer:
 
     def draw(self, bow, arrow):
         '''
+        Calculate the probability of successful draw.
         :param bow: Bow; the bow self is shooting with
         :param arrow: Arrow; the arrow being shot
         :return prob_success: float;
@@ -150,6 +159,8 @@ class Archer:
         '''
         if not arrow.nocked or arrow.nocked_on != bow.name:
             raise ValueError("The arrow isn't nocked on {}".format(bow.name))
+        if not bow.assembled:
+            raise ValueError("Your bow is in pieces!")
 
         length_prob = self.get_prob_on_bow_length(bow)
         weight_prob = self.get_prob_on_limb_weight(bow)
@@ -160,6 +171,10 @@ class Archer:
 
     def shoot(self, bow, arrow):
         '''
+        Calculate the probability of successful shoot.
+        :param bow: Bow; the bow self is shooting with
+        :param arrow: Arrow; the arrow being shot
+        :return shot_success: Bool; whether or not the shot hit the target
         '''
         if not self.drawn:
             raise ValueError("You can't shoot if you don't draw.")
@@ -168,6 +183,7 @@ class Archer:
         return shot_success
 
 def main():
+    
     # Choose a bow
     vincent = Bow(
         brand='WNS', limb_colour='white', limb_len=12, 
@@ -200,6 +216,7 @@ def main():
     # Create an Archer instance for yourself!
     shooters = []
     Lindsay = Archer(name='Lindsay', skill=6, wingspan=68)
+    vincent.assemble()
     blue.nock(vincent)
     Lindsay.draw(bow=vincent, arrow=blue)
     Lindsay_result = Lindsay.shoot(bow=vincent, arrow=blue)
