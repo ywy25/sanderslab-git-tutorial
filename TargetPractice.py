@@ -22,14 +22,6 @@ class Arrow:
         self.nocked = False
         self.nocked_on = None
 
-    def nock(self, bow):
-        '''
-        :param bow: Bow; bow to which the arrow is nocked
-        '''
-        self.nocked = True
-        self.nocked_on = bow.name
-
-
 class Bow:
     '''
     Bow class for shooting arrows.
@@ -157,8 +149,6 @@ class Archer:
         :return prob_success: float;
              the probability of a successful shot after the draw
         '''
-        if not arrow.nocked or arrow.nocked_on != bow.name:
-            raise ValueError("The arrow isn't nocked on {}".format(bow.name))
         if not bow.assembled:
             raise ValueError("Your bow is in pieces!")
 
@@ -215,12 +205,18 @@ def main():
     
     # Create an Archer instance for yourself!
     shooters = []
+
     Lindsay = Archer(name='Lindsay', skill=6, wingspan=68)
     vincent.assemble()
-    blue.nock(vincent)
     Lindsay.draw(bow=vincent, arrow=blue)
     Lindsay_result = Lindsay.shoot(bow=vincent, arrow=blue)
     shooters.append((Lindsay, vincent, blue))
+
+    Jon = Archer(name='Jon', skill=8, wingspan=72)
+    beryl.assemble()
+    Jon.draw(bow=beryl, arrow=blue)
+    Jon_result = Jon.shoot(bow=beryl, arrow=blue)
+    shooters.append((Jon, beryl, blue))
 
     for shooter in shooters:
         archer = shooter[0]
